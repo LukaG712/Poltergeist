@@ -1,4 +1,4 @@
-"""Data models for Polterpup notifications."""
+"""Data models for Poltergeist notifications."""
 
 from datetime import datetime
 from enum import Enum

@@ -1,10 +1,10 @@
-"""Tests for Polterpup notification service."""
+"""Tests for Poltergeist notification service."""
 
 import os
 import pytest
 from fastapi.testclient import TestClient
 
-from polterpup.api import app, _notifications, _templates
+from poltergeist.api import app, _notifications, _templates
 
 
 @pytest.fixture(autouse=True)
@@ -24,7 +24,7 @@ class TestHealth:
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "ok"
-        assert data["service"] == "Polterpup"
+        assert data["service"] == "Poltergeist"
 
 
 class TestNotifications:

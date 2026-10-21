@@ -1,4 +1,4 @@
-"""FastAPI application for Polterpup notification service."""
+"""FastAPI application for Poltergeist notification service."""
 
 import os
 from datetime import datetime
@@ -6,16 +6,16 @@ from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException, Query
 
-from polterpup.models import Notification, Template, Channel, NotificationStatus
+from poltergeist.models import Notification, Template, Channel, NotificationStatus
 
 
 app = FastAPI(
-    title="Polterpup",
+    title="Poltergeist",
     description="Notification and messaging hub for the Evershade ecosystem",
     version="1.0.0",
 )
 
-API_KEY = os.getenv("API_KEY", "Polterpup-dev-key-change-me")
+API_KEY = os.getenv("API_KEY", "Poltergeist-dev-key-change-me")
 
 _notifications: list[Notification] = []
 _templates: dict[str, Template] = {}
@@ -28,7 +28,7 @@ def verify_key(x_key: Optional[str] = Query(None)) -> None:
 
 @app.get("/health")
 async def health() -> dict[str, str]:
-    return {"status": "ok", "service": "Polterpup"}
+    return {"status": "ok", "service": "Poltergeist"}
 
 
 # ─── Notifications ──────────────────────────────────────────────

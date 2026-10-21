@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "polterpup"
+name = "poltergeist"
 version = "1.0.0"
 description = "Notification and messaging hub for the Evershade ecosystem"
 readme = "README.md"
@@ -18,14 +18,14 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/LukaG712/Polterpup"
-Repository = "https://github.com/LukaG712/Polterpup"
+Homepage = "https://github.com/LukaG712/Poltergeist"
+Repository = "https://github.com/LukaG712/Poltergeist"
 
 [project.optional-dependencies]
 dev = ["pytest==8.3.0", "pytest-asyncio==0.24.0", "pytest-timeout==2.3.1", "ruff==0.9.0"]
 
 [tool.setuptools.packages.find]
-include = ["polterpup*"]
+include = ["poltergeist*"]
 
 [tool.ruff]
 target-version = "py311"
