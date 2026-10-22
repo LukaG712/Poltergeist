@@ -1,12 +1,12 @@
 """Data models for Poltergeist notifications."""
 
 from datetime import datetime
-from enum import Enum
-from typing import Any, Optional
+from enum import StrEnum
+from typing import Any
 from uuid import UUID, uuid4
 
 
-class Channel(str, Enum):
+class Channel(StrEnum):
     SLACK = "slack"
     DISCORD = "discord"
     EMAIL = "email"
@@ -14,7 +14,7 @@ class Channel(str, Enum):
     WEBHOOK = "webhook"
 
 
-class NotificationStatus(str, Enum):
+class NotificationStatus(StrEnum):
     PENDING = "pending"
     SENT = "sent"
     FAILED = "failed"
@@ -27,10 +27,10 @@ class Notification:
         recipient: str,
         title: str,
         message: str,
-        metadata: Optional[dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
         status: NotificationStatus = NotificationStatus.PENDING,
-        id: Optional[UUID] = None,
-        created_at: Optional[datetime] = None,
+        id: UUID | None = None,
+        created_at: datetime | None = None,
     ):
         self.id = id or uuid4()
         self.channel = channel
@@ -40,8 +40,8 @@ class Notification:
         self.metadata = metadata or {}
         self.status = status
         self.created_at = created_at or datetime.utcnow()
-        self.sent_at: Optional[datetime] = None
-        self.error: Optional[str] = None
+        self.sent_at: datetime | None = None
+        self.error: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -65,8 +65,8 @@ class Template:
         channel: Channel,
         subject: str,
         body: str,
-        variables: Optional[list[str]] = None,
-        id: Optional[UUID] = None,
+        variables: list[str] | None = None,
+        id: UUID | None = None,
     ):
         self.id = id or uuid4()
         self.name = name

@@ -4,17 +4,17 @@ Delivers real notifications via Slack, Discord, Email, Telegram, and webhooks.
 Persists notifications and templates in SQLite.
 """
 
-import os
-import hmac
 import asyncio
+import hmac
 import logging
+import os
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
-from fastapi import FastAPI, HTTPException, Header
+from fastapi import FastAPI, Header, HTTPException
 
-from poltergeist.models import Notification, Template, Channel, NotificationStatus
 from poltergeist.delivery import get_delivery
+from poltergeist.models import Channel, Notification, NotificationStatus, Template
 from poltergeist.storage import Storage
 
 logger = logging.getLogger("poltergeist")
@@ -32,7 +32,7 @@ storage = Storage(db_path=os.getenv("DB_PATH", "/app/data/poltergeist.db"))
 MAX_RETRIES = int(os.getenv("POLTERGEIST_MAX_RETRIES", "3"))
 
 
-def verify_bearer(authorization: Optional[str] = Header(None)) -> None:
+def verify_bearer(authorization: str | None = Header(None)) -> None:
     """Verify Bearer token in Authorization header."""
     if authorization and authorization.startswith("Bearer "):
         token = authorization[7:]
@@ -83,7 +83,7 @@ async def health() -> dict[str, str]:
 # ─── Notifications ──────────────────────────────────────────────
 
 @app.post("/api/notifications")
-async def send_notification(data: dict[str, Any], authorization: Optional[str] = Header(None)) -> dict[str, Any]:
+async def send_notification(data: dict[str, Any], authorization: str | None = Header(None)) -> dict[str, Any]:
     """Send a notification via the specified channel.
 
     Supports real delivery to Slack, Discord, Email, Telegram, and webhooks.
@@ -118,10 +118,10 @@ async def send_notification(data: dict[str, Any], authorization: Optional[str] =
 
 @app.get("/api/notifications")
 async def list_notifications(
-    channel: Optional[str] = None,
-    status: Optional[str] = None,
+    channel: str | None = None,
+    status: str | None = None,
     limit: int = 50,
-    authorization: Optional[str] = Header(None),
+    authorization: str | None = Header(None),
 ) -> list[dict[str, Any]]:
     """List notifications with optional filtering."""
     verify_bearer(authorization)
@@ -145,7 +145,7 @@ async def list_notifications(
 @app.get("/api/notifications/{notification_id}")
 async def get_notification(
     notification_id: str,
-    authorization: Optional[str] = Header(None),
+    authorization: str | None = Header(None),
 ) -> dict[str, Any]:
     """Get a notification by ID."""
     verify_bearer(authorization)
@@ -168,7 +168,7 @@ async def get_notification(
 # ─── Templates ──────────────────────────────────────────────────
 
 @app.post("/api/templates")
-async def create_template(data: dict[str, Any], authorization: Optional[str] = Header(None)) -> dict[str, Any]:
+async def create_template(data: dict[str, Any], authorization: str | None = Header(None)) -> dict[str, Any]:
     """Create a notification template."""
     verify_bearer(authorization)
     template = Template(
@@ -183,7 +183,7 @@ async def create_template(data: dict[str, Any], authorization: Optional[str] = H
 
 
 @app.get("/api/templates")
-async def list_templates(authorization: Optional[str] = Header(None)) -> list[dict[str, Any]]:
+async def list_templates(authorization: str | None = Header(None)) -> list[dict[str, Any]]:
     """List all notification templates."""
     verify_bearer(authorization)
     rows = storage.list_templates()
@@ -201,7 +201,7 @@ async def list_templates(authorization: Optional[str] = Header(None)) -> list[di
 
 
 @app.get("/api/templates/{name}")
-async def get_template(name: str, authorization: Optional[str] = Header(None)) -> dict[str, Any]:
+async def get_template(name: str, authorization: str | None = Header(None)) -> dict[str, Any]:
     """Get a template by name."""
     verify_bearer(authorization)
     row = storage.get_template(name)
@@ -221,7 +221,7 @@ async def get_template(name: str, authorization: Optional[str] = Header(None)) -
 async def send_from_template(
     name: str,
     data: dict[str, Any],
-    authorization: Optional[str] = Header(None),
+    authorization: str | None = Header(None),
 ) -> dict[str, Any]:
     """Send a notification using a template."""
     verify_bearer(authorization)
@@ -261,7 +261,7 @@ async def send_from_template(
 
 
 @app.delete("/api/templates/{name}")
-async def delete_template(name: str, authorization: Optional[str] = Header(None)) -> dict[str, bool]:
+async def delete_template(name: str, authorization: str | None = Header(None)) -> dict[str, bool]:
     """Delete a template by name."""
     verify_bearer(authorization)
     deleted = storage.delete_template(name)

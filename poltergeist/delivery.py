@@ -4,17 +4,16 @@ Each delivery class handles formatting and sending notifications to a specific
 channel: Slack (webhooks), Discord (webhooks), Email (SMTP), and Telegram (bot API).
 """
 
-import os
 import logging
+import os
 import smtplib
 import ssl
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from typing import Any, Optional
+from email.mime.text import MIMEText
 
 import httpx
 
-from poltergeist.models import Notification, NotificationStatus
+from poltergeist.models import Notification
 
 logger = logging.getLogger("poltergeist")
 

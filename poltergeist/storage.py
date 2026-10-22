@@ -3,10 +3,8 @@
 import os
 import sqlite3
 from datetime import datetime
-from typing import Any, Optional
-from uuid import uuid4
 
-from poltergeist.models import Notification, Template, Channel, NotificationStatus
+from poltergeist.models import Notification, NotificationStatus, Template
 
 
 class Storage:
@@ -70,7 +68,7 @@ class Storage:
             )
             conn.commit()
 
-    def update_notification_status(self, notification_id: str, status: NotificationStatus, error: Optional[str] = None, sent_at: Optional[datetime] = None) -> bool:
+    def update_notification_status(self, notification_id: str, status: NotificationStatus, error: str | None = None, sent_at: datetime | None = None) -> bool:
         with self._get_conn() as conn:
             updates = ["status = ?"]
             values = [status.value]
@@ -87,8 +85,8 @@ class Storage:
 
     def list_notifications(
         self,
-        channel: Optional[str] = None,
-        status: Optional[str] = None,
+        channel: str | None = None,
+        status: str | None = None,
         limit: int = 50,
     ) -> list[dict]:
         with self._get_conn() as conn:
@@ -105,7 +103,7 @@ class Storage:
             rows = conn.execute(query, params).fetchall()
             return [dict(r) for r in rows]
 
-    def get_notification(self, notification_id: str) -> Optional[dict]:
+    def get_notification(self, notification_id: str) -> dict | None:
         with self._get_conn() as conn:
             row = conn.execute(
                 "SELECT * FROM notifications WHERE id = ?",
@@ -128,7 +126,7 @@ class Storage:
             )
             conn.commit()
 
-    def get_template(self, name: str) -> Optional[dict]:
+    def get_template(self, name: str) -> dict | None:
         with self._get_conn() as conn:
             row = conn.execute(
                 "SELECT * FROM templates WHERE name = ?", (name,)

@@ -2,6 +2,7 @@
 
 import os
 import tempfile
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -13,7 +14,8 @@ db_fd, db_path = tempfile.mkstemp(suffix=".db")
 os.close(db_fd)
 os.environ["DB_PATH"] = db_path
 
-from poltergeist.api import app
+from poltergeist.api import app  # noqa: E402
+
 
 @pytest.fixture(autouse=True)
 def cleanup_db():
