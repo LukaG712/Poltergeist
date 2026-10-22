@@ -19,13 +19,19 @@ from poltergeist.api import app  # noqa: E402
 
 @pytest.fixture(autouse=True)
 def cleanup_db():
-    """Clean up test database after each test."""
-    yield
-    if os.path.exists(db_path):
-        try:
-            os.unlink(db_path)
-        except OSError:
-            pass
+    """Reset test database tables before and after each test."""
+    import sqlite3
+
+    from poltergeist.storage import Storage
+    # Drop tables before each test to start clean
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.execute("DROP TABLE IF EXISTS notifications")
+        conn.execute("DROP TABLE IF EXISTS templates")
+        conn.commit()
+        conn.close()
+    except OSError:
+        pass
     for suffix in ("-wal", "-shm"):
         wal_path = db_path + suffix
         if os.path.exists(wal_path):
@@ -33,6 +39,9 @@ def cleanup_db():
                 os.unlink(wal_path)
             except OSError:
                 pass
+    # Re-initialize the database schema
+    Storage(db_path=db_path)._init_db()
+    yield
 
 
 client = TestClient(app)
