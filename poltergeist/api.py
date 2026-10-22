@@ -80,6 +80,38 @@ async def health() -> dict[str, str]:
     return {"status": "ok", "service": "Poltergeist"}
 
 
+@app.get("/api/capabilities")
+async def capabilities() -> dict:
+    """Report the capabilities supported by this Poltergeist instance."""
+    return {
+        "service": "Poltergeist",
+        "version": "1.1.0",
+        "features": {
+            "email_notifications": {
+                "supported": True,
+                "description": "Email notifications via SMTP",
+            },
+            "slack_notifications": {
+                "supported": True,
+                "description": "Slack webhook notifications",
+            },
+            "webhook_notifications": {
+                "supported": True,
+                "description": "Generic webhook notifications",
+            },
+            "notification_templates": {
+                "supported": True,
+                "description": "Custom notification templates",
+            },
+            "notification_queue": {
+                "supported": True,
+                "description": "Queued notification delivery with retry",
+            },
+        },
+        "api_versions": ["v1"],
+    }
+
+
 # ─── Notifications ──────────────────────────────────────────────
 
 @app.post("/api/notifications")
